@@ -1,19 +1,3 @@
-// #include "Kvalue.cpp"
-// #include <iostream>
-// using namespace std;
-// int main(){
-//     Kvalue kvalue1(8,"重庆");
-//     Kvalue kvalue2(9,"报恩经");
-//     if (kvalue2>kvalue1)
-//     {
-//         /* code */
-//         cout<<"大于";
-//     }else
-//     cout<<"小雨";
-//     return 0;
-// }
-//------------------
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,7 +22,7 @@ using json = nlohmann::json;
 #define BUFFER_SIZE PIPE_BUF
 
 using namespace std;
-
+//读取数据
 string getdata(){
         int pipe_fd;
         char buffer[BUFFER_SIZE + 1];
@@ -55,6 +39,7 @@ string getdata(){
         close(pipe_fd);
         return buffer;
     }
+ //获取hash值
 int myhash(string key){
     char buf[50];
 	strcpy(buf , key.c_str());//字符串转字符数组，使用strcpy
@@ -74,21 +59,21 @@ int main() {
 
     char buffer[BUFFER_SIZE + 1];
     //if the pipe file do not exist
-    int op, x,selectOp;
+    int selectOp;
     string key,valueD,reMsg;
-    srand((unsigned)time(NULL));
     RB_Tree<Kvalue> w;
     // cout<<rand()%100<<endl;
     RB_Node<Kvalue> *p=new RB_Node<Kvalue>;
    while(true)
     {   
        string jsonData=getdata();
-        auto j4 = json::parse(jsonData);
+       auto j4 = json::parse(jsonData);
         int selectOp=j4["option"].get<int>();
         string key=j4["key"].get<string>();
         string value=j4["value"].get<string>();
         cout<<selectOp<<key<<value<<endl;
-        cout<<"0代表查询，1代表增加,输入key,以及value。2代表删除,3代表修改，4代表层次遍历,5代表退出";
+        
+        //cout<<"0代表查询，1代表增加,输入key,以及value。2代表删除,3代表修改，4代表层次遍历,5代表退出";
         if (selectOp==1)
         {
             /* code */
@@ -107,6 +92,7 @@ int main() {
         {
             //  cout<<"输入你想删除的key";     
                 //    cin>>key;
+                
                    Kvalue kvalue1(key,myhash(key));
                     bool res = w.del(kvalue1);
                     if (!res) {
@@ -118,37 +104,35 @@ int main() {
         //修改
         else if (selectOp==3)
         {
-           cout<<"输入你想修改的key";
-            cin>>key;
+        //    cout<<"输入你想修改的key";
+        //     cin>>key;
             Kvalue kvalue2(key,myhash(key));
             p=w.find(kvalue2);
              int valueID=p->value.getValue(key);
             if (p == nullptr) 
             {      // 没有该元素，删除失败
-                       cout<<"没有该元素";
+                       reMsg="没有该元素";
             }else{
                 w.del(kvalue2);
-                cout<<"修改为多少:";
-                cin>>valueD;
+                // cout<<"修改为多少:";
+                // cin>>valueD;
+                valueD=value;
                 Kvalue updatekvalue(key,valueD,valueID);
                 w.insert(updatekvalue);
-                cout<<"成功修改";
+                reMsg="成功修改";
         }
         }
         //查询
         else if (selectOp==0)
         {
             /* code */
-            cout<<"输入你想查询的key";
-            cin>>key;
             Kvalue kvalue3(key,myhash(key));
             p=w.find(kvalue3);
             if (p == nullptr) 
             {      // 没有该元素，删除失败
-                       cout<<"没有该元素";
+                       reMsg="没有该元素";
             }else{
-            cout<<p->value.data;
-           cout<<"成功输出";
+            reMsg=p->value.data;
             }
 
         }

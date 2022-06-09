@@ -77,7 +77,7 @@ public:
             return os;
         }
     ~Kvalue(){
-        cout<<"xigou0";
+        cout<<"xigou\n";
     };
 };
 
