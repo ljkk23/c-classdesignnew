@@ -114,9 +114,7 @@ int main()
     j3["value"] = "bdsadbb";
     
 	writeData(j3);
-
     getdata();
 
-    
     return 0;
 }
